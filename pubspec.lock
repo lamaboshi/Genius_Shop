@@ -91,11 +91,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_web_plugins:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
+  get:
+    dependency: "direct main"
+    description:
+      name: get
+      sha256: c79eeb4339f1f3deffd9ec912f8a923834bec55f7b49c9e882b8fef2c139d425
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.7.2"
   http_parser:
     dependency: transitive
     description:
@@ -160,6 +163,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.16.0"
+  overlayment:
+    dependency: "direct main"
+    description:
+      name: overlayment
+      sha256: "01f490c1c5d377eae737370e5eaad5500c2205b2cf2185a42bfb87bc7748763c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
   path:
     dependency: transitive
     description:
@@ -168,22 +179,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
-  qlevar_router:
-    dependency: "direct main"
-    description:
-      name: qlevar_router
-      sha256: cf70ed60a4916fb317cbde176dd14d58d847c70e9399cf43cee4bc39232fc1b9
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.12.1"
-  reactable:
-    dependency: "direct main"
-    description:
-      name: reactable
-      sha256: b30e7030e82276d994cd7f45772f35d5e32eeeba0449d6550cba5817236a69b7
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.7"
   sky_engine:
     dependency: transitive
     description: flutter
