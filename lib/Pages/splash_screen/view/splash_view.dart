@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:genius_shop/core/api/storage_service.dart';
 import 'package:get/get.dart';
 
 import '../../../app_router.dart';
@@ -34,7 +35,11 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         Future.delayed(const Duration(seconds: 1), () {
-          Get.rootDelegate.toNamed(AppRouter.logIn);
+          Get.rootDelegate.offAndToNamed(
+            Get.find<StorageService>().isAuth
+                ? AppRouter.home
+                : AppRouter.logIn,
+          );
         });
       }
     });

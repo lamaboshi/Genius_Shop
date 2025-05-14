@@ -1,62 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:genius_shop/Pages/login/controller/login_controller.dart';
 import 'package:genius_shop/app_router.dart';
-import 'package:genius_shop/domain/auth_repo.dart';
 import 'package:get/get.dart';
 import '../../../core/helper/constens.dart';
 import '../../../ui/widget/action_button.dart';
+import '../../../ui/widget/text_field.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<LogInController>();
     return Scaffold(
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
+          child: ListView(
             children: [
-              SizedBox(height: Get.height / 5),
-              Text(
-                'Hi ,Welcome',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+              SizedBox(height: Get.height / 7),
+              Column(
+                children: [
+                  Text(
+                    'Hi ,Welcome',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                  ),
+                  Text(
+                    'Welcome back! Please enter your details',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ],
               ),
-              Text(
-                'Welcome back! Please enter your details',
-                style: TextStyle(color: Colors.grey),
-              ),
+
               SizedBox(height: Get.height / 17),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    TextField(
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue),
-                        ),
-                        hintText: 'Email',
-                      ),
+                    TextFieldWidget(
+                      label: 'Email',
+                      onChanged: (String value) {
+                        controller.user.value.email = value;
+                      },
+                      textInputType: TextInputType.text,
                     ),
-                    SizedBox(height: 15),
-                    TextField(
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue),
-                        ),
-                        hintText: 'PassWord',
-                      ),
+
+                    TextFieldWidget(
+                      label: 'Password',
+                      onChanged: (value) {
+                        controller.user.value.password = value;
+                      },
+                      textInputType: TextInputType.text,
                     ),
                   ],
                 ),
               ),
-
+              sp10,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -81,12 +80,20 @@ class LoginView extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ActionButton(
-                  title: Text('LogIn', style: TextStyle(color: Colors.white)),
-                  withBorder: false,
-                  onPressed: () async {
-                    await AuthRepository().getAuth();
-                  },
+                child: Obx(
+                  () =>
+                      controller.isLoading.value
+                          ? Center(child: CircularProgressIndicator())
+                          : ActionButton(
+                            title: Text(
+                              'LogIn',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            withBorder: false,
+                            onPressed: () async {
+                              await controller.logIn();
+                            },
+                          ),
                 ),
               ),
               sp20,
