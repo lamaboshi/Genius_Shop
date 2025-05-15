@@ -12,6 +12,7 @@ class User {
   String? description;
   String? role;
   bool? isSuperAdmin;
+  String? avatarUrl;
   User({
     this.id,
     this.firstName,
@@ -22,6 +23,7 @@ class User {
     this.password,
     this.email,
     this.isSuperAdmin,
+    this.avatarUrl,
   });
 
   Map<String, dynamic> toMap() {
@@ -34,6 +36,7 @@ class User {
       'name': name,
       'email': email,
       'password': password,
+      'avatar_url': avatarUrl,
     };
   }
 
@@ -45,6 +48,7 @@ class User {
       name: map['name'],
       userName: map['slug'],
       role: map['role'],
+      avatarUrl: map['avatar_url'],
       email: map['email'],
       isSuperAdmin: map['is_super_admin'] as bool,
     );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:genius_shop/domain/model/product_category.dart';
 import 'package:get/get.dart';
 
-import '../controller/home_controller.dart';
+import '../../controller/home_controller.dart';
 
 class ListCategoriesView extends StatelessWidget {
   const ListCategoriesView({super.key});

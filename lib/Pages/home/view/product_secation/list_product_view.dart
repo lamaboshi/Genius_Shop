@@ -4,9 +4,6 @@ import 'package:genius_shop/app_router.dart';
 import 'package:genius_shop/domain/model/product.dart';
 import 'package:get/get.dart';
 
-import 'list_categories_view.dart';
-import 'product_pagination.dart';
-
 class ListProductView extends StatelessWidget {
   const ListProductView({super.key});
 
@@ -17,53 +14,26 @@ class ListProductView extends StatelessWidget {
       () =>
           controller.isLoading.value
               ? Center(child: CircularProgressIndicator())
-              : Column(
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        ListCategoriesView(),
-                        Obx(
-                          () => ProductPagination(
-                            currentPage: controller.currentPage.value,
-                            totalPages: controller.totalPages.value,
-                            onPageChanged: (value) async {
-                              if (value != controller.currentPage.value) {
-                                controller.currentPage.value = value;
-                                await controller.getProductByPage(value);
-                              }
-                            },
-                            isLoading: false,
-                          ),
+              : SingleChildScrollView(
+                child:
+                    controller.isLoadingProduct.value
+                        ? CircularProgressIndicator()
+                        : Wrap(
+                          children:
+                              controller.products
+                                  .map(
+                                    (e) => InkWell(
+                                      onTap: () {
+                                        Get.rootDelegate.toNamed(
+                                          AppRouter.product,
+                                          arguments: {'id': e.id},
+                                        );
+                                      },
+                                      child: ProductCard(item: e),
+                                    ),
+                                  )
+                                  .toList(),
                         ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: SingleChildScrollView(
-                      child:
-                          controller.isLoadingProduct.value
-                              ? CircularProgressIndicator()
-                              : Wrap(
-                                children:
-                                    controller.products
-                                        .map(
-                                          (e) => InkWell(
-                                            onTap: () {
-                                              Get.rootDelegate.toNamed(
-                                                AppRouter.product,
-                                                arguments: {'id': e.id},
-                                              );
-                                            },
-                                            child: ProductCard(item: e),
-                                          ),
-                                        )
-                                        .toList(),
-                              ),
-                    ),
-                  ),
-                ],
               ),
     );
   }

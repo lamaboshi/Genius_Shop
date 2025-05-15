@@ -7,6 +7,7 @@ import '../../../domain/model/user.dart';
 class LogInController extends GetxController {
   final user = User().obs;
   final isLoading = false.obs;
+  final rememberMe = true.obs;
 
   Future<void> logIn() async {
     isLoading.value = true;
@@ -15,8 +16,10 @@ class LogInController extends GetxController {
       user.value.password!,
     );
     isLoading.value = false;
-    if (result) {
-      Get.rootDelegate.offAndToNamed(AppRouter.home);
-    }
+
+    Get.rootDelegate.offAndToNamed(
+      AppRouter.home,
+      arguments: rememberMe.value ? null : result,
+    );
   }
 }

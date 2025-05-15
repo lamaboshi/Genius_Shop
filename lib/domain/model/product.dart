@@ -5,6 +5,7 @@ import 'default_attributes.dart';
 import 'product_attribute.dart';
 import 'product_category.dart';
 import 'product_image.dart';
+import 'product_tag.dart';
 
 class Product {
   int? id;
@@ -20,6 +21,7 @@ class Product {
   List<ProductImage>? images;
   List<Attribute>? attributes;
   List<DefaultAttribute>? defaultAttributes;
+  List<ProductTag>? tags;
   Product({
     this.id,
     this.name,
@@ -34,6 +36,7 @@ class Product {
     this.images,
     this.attributes,
     this.defaultAttributes,
+    this.tags,
   });
 
   Map<String, dynamic> toMap() {
@@ -51,6 +54,7 @@ class Product {
       'images': images?.map((x) => x.toMap()).toList(),
       'attributes': attributes?.map((x) => x.toMap()).toList(),
       'defaultAttributes': defaultAttributes?.map((x) => x.toMap()).toList(),
+      'tags': tags?.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -101,6 +105,14 @@ class Product {
               ? List<DefaultAttribute>.from(
                 (map['default_attributes'] as List).map<DefaultAttribute?>(
                   (x) => DefaultAttribute.fromMap(x as Map<String, dynamic>),
+                ),
+              )
+              : null,
+      tags:
+          map['tags'] != null
+              ? List<ProductTag>.from(
+                (map['tags'] as List).map<ProductTag?>(
+                  (x) => ProductTag.fromMap(x as Map<String, dynamic>),
                 ),
               )
               : null,

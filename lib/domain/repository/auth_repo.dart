@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:genius_shop/core/api/storage_service.dart';
 import 'package:genius_shop/domain/model/user.dart';
 import 'package:get/get.dart';
-
+import '../../core/helper/dio_api_handler.dart';
 import '../../main.dart';
 import '../interfaces/auth_interface.dart';
 
@@ -14,24 +14,30 @@ class AuthRepository extends IAuthRepository {
   final _storage = Get.find<StorageService>();
 
   @override
-  Future<bool> login(String username, String password) async {
+  Future<User?> login(
+    String username,
+    String password, {
+    bool rememberMe = true,
+  }) async {
     try {
       final response = await _dio.post(
         '$BASE_Endpoint/wp-json/jwt-auth/v1/token',
         data: {'username': username, 'password': password},
       );
+      if (rememberMe) {
+        _storage.saveData(StorageService.authToken, response.data['token']);
+      }
 
-      _storage.saveData(StorageService.authToken, response.data['token']);
-      await getCurrentUser();
-      return true;
+      final result = await getCurrentUser(rememberMe: rememberMe);
+      return result;
     } on DioException catch (e) {
       print('Login failed: ${e.response?.data}');
-      return false;
+      return null;
     }
   }
 
   @override
-  Future<void> getCurrentUser() async {
+  Future<User?> getCurrentUser({bool rememberMe = true}) async {
     final token = _storage.getData(StorageService.authToken);
     print('the Token : $token');
     try {
@@ -41,11 +47,15 @@ class AuthRepository extends IAuthRepository {
       );
 
       if (response.statusCode == 200) {
-        _storage.saveData(StorageService.userData, jsonEncode(response.data));
+        if (rememberMe) {
+          _storage.saveData(StorageService.userData, jsonEncode(response.data));
+        }
+        return User.fromMap(response.data);
       }
     } on DioException catch (e) {
       print('Login failed: ${e.response?.data}');
     }
+    return null;
   }
 
   @override
@@ -63,29 +73,43 @@ class AuthRepository extends IAuthRepository {
 
   @override
   Future<bool> signup(User user) async {
-    final data = user.toMap();
-    data['roles'] = ['contributor'];
-    print(data);
-    try {
-      final result = await _dio.post(
-        '$BASE_Endpoint/wp-json/jwt-auth/v1/token',
-        data: {'username': user.name, 'password': user.password},
-      );
-      final token = result.data['token'];
-      final response = await _dio.post(
-        '$BASE_Endpoint/wp-json/wp/v2/users',
-        data: user.toJson(),
-        options: Options(headers: {'Authorization': 'Bearer $token'}),
-      );
+    return true;
+  }
 
-      print('its work $response');
-      // if (response.statusCode == 201) {
-      //   return await login(user.name!, user.password!);
-      // }
-      return false;
-    } on DioException catch (e) {
-      print('Signup failed: ${e.response?.data}');
-      return false;
-    }
+  @override
+  Future<bool> sendPasswordResetEmail(String email) async {
+    final response = await DioApiHandler.execute(
+      apiCall:
+          () => _dio.post(
+            '$BASE_Endpoint/wp/v2/users/lost-password',
+            data: jsonEncode({'user_login': email}),
+            options: Options(headers: {'Content-Type': 'application/json'}),
+          ),
+      operationName: 'lost-password',
+    );
+    return response.statusCode == 200;
+  }
+
+  @override
+  Future<bool> resetPassword({
+    required String resetKey,
+    required String newPassword,
+    required String userLogin,
+  }) async {
+    final response = await DioApiHandler.execute(
+      apiCall:
+          () => _dio.post(
+            '$BASE_Endpoint/wp-json/wp/v2/users/reset-password',
+            data: jsonEncode({
+              'key': resetKey,
+              'password': newPassword,
+              'user_login': userLogin,
+            }),
+            options: Options(headers: {'Content-Type': 'application/json'}),
+          ),
+      operationName: 'users/reset-password',
+    );
+
+    return response.statusCode == 200;
   }
 }

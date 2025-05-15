@@ -59,20 +59,28 @@ class LoginView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(
-                    child: CheckboxListTile(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      dense: true,
-                      fillColor: WidgetStatePropertyAll(Colors.black),
-                      value: true,
-                      onChanged: (value) {},
-                      title: Text('Remember me'),
+                  Obx(
+                    () => Flexible(
+                      child: CheckboxListTile(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        controlAffinity: ListTileControlAffinity.leading,
+                        dense: true,
+                        fillColor: WidgetStatePropertyAll(
+                          controller.rememberMe.value
+                              ? Colors.black
+                              : Colors.transparent,
+                        ),
+                        value: controller.rememberMe.value,
+                        onChanged: (value) {
+                          controller.rememberMe.value = value!;
+                        },
+                        title: Text('Remember me'),
+                      ),
                     ),
                   ),
                   InkWell(
                     onTap: () {
-                      Get.rootDelegate.toNamed(AppRouter.password);
+                      Get.rootDelegate.toNamed(AppRouter.confirm);
                     },
                     child: Text('Forget password ?!'),
                   ),

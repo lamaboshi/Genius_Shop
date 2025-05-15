@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:genius_shop/Pages/forgot_password/controller/forget_password_controller.dart';
+import 'package:genius_shop/ui/widget/text_field.dart';
 import 'package:get/get.dart';
 
-import '../../../app_router.dart';
 import '../../../core/helper/constens.dart';
 import '../../../ui/widget/action_button.dart';
 
@@ -11,6 +12,7 @@ class ConfirmEmailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<ForgetPasswordController>();
     return Scaffold(
       body: Center(
         child: Padding(
@@ -38,17 +40,14 @@ class ConfirmEmailView extends StatelessWidget {
                 ),
               ),
               SizedBox(height: Get.height / 17),
-              TextField(
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue),
-                  ),
-                  hintText: 'Email',
-                ),
+              TextFieldWidget(
+                onChanged: (value) {
+                  controller.email.value = value;
+                },
+                textInputType: TextInputType.text,
+                label: 'Email',
               ),
+
               sp20,
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -59,7 +58,7 @@ class ConfirmEmailView extends StatelessWidget {
                   ),
                   withBorder: false,
                   onPressed: () async {
-                    Get.rootDelegate.toNamed(AppRouter.home);
+                    await controller.confirmEmail();
                   },
                 ),
               ),
