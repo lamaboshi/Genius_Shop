@@ -1,12 +1,16 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:genius_shop/Pages/product/view/product_title.dart'
+    show ProductTitle;
+import 'package:get/get.dart';
+
 import 'package:genius_shop/core/helper/build_context_extension.dart';
 import 'package:genius_shop/core/helper/constens.dart';
-import 'package:genius_shop/ui/widget/action_button.dart';
-import 'package:get/get.dart';
 
 import '../../../ui/widget/expandable_text.dart';
 import '../controller/product_controller.dart';
+import 'additional_info_product.dart';
 
 class ProductView extends StatelessWidget {
   ProductView({super.key});
@@ -44,47 +48,37 @@ class ProductView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
+                      Row(
                         children: [
-                          _getImageController,
-                          sp20,
-                          sp20,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    controller.product.value.name ?? '',
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    controller.product.value.slug ?? '',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                              IconButton(
-                                style: context.actionBorderButtonStyle,
-                                onPressed: () {},
-                                icon: Icon(Icons.favorite_outline),
-                              ),
-                            ],
+                          Chip(
+                            label: Text(
+                              controller.product.value.type!.name,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor:
+                                controller.product.value.type!.color,
+                          ),
+                          sp10,
+                          Chip(
+                            label: Text(
+                              controller.product.value.stockStatus!.name,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor:
+                                controller.product.value.stockStatus!.color,
                           ),
                         ],
                       ),
-
+                      _getImageController,
+                      ProductTitle(),
                       Expanded(
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              sp20,
+                              Text(
+                                controller.product.value.shortDescription ?? '',
+                              ),
                               Text(
                                 'Description',
                                 style: TextStyle(
@@ -96,89 +90,51 @@ class ProductView extends StatelessWidget {
                                 text:
                                     controller.product.value.description ?? '',
                               ),
+                              sp10,
 
-                              Column(
-                                children:
-                                    controller.product.value.attributes!
-                                        .map(
-                                          (e) => Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(e.name ?? ''),
-                                              Wrap(
-                                                spacing: 8.0,
-                                                children:
-                                                    e.options!.map((option) {
-                                                      return FilterChip(
-                                                        label: Text(option),
-                                                        selected: true,
-                                                        onSelected:
-                                                            (bool selected) {},
-                                                      );
-                                                    }).toList(),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                        .toList(),
-                              ),
-                              sp20,
+                              AdditionalInformationProduct(),
+
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-
-                                        children: [
-                                          Text(
-                                            'Total Price',
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                            ),
+                                    controller
+                                            .product
+                                            .value
+                                            .regularPrice!
+                                            .isEmpty
+                                        ? SizedBox.shrink()
+                                        : _ColumnSection(
+                                          title: 'Regular Price',
+                                          style: TextStyle(
+                                            decoration:
+                                                TextDecoration.lineThrough,
                                           ),
-                                          Text(
-                                            '\$${controller.product.value.price ?? 0}',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: ActionButton(
-                                        title: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.shopping_basket_outlined,
-                                              color: Colors.white,
-                                            ),
-                                            SizedBox(width: 5),
-                                            Text(
-                                              'Add To Card',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
+                                          value:
+                                              '\$${controller.product.value.regularPrice ?? 0}',
                                         ),
-                                        withBorder: false,
-                                        onPressed: () {},
-                                      ),
+                                    _ColumnSection(
+                                      title: 'Total Price',
+                                      style: null,
+                                      value:
+                                          '\$${controller.product.value.price ?? 0}',
                                     ),
+                                    Expanded(child: sp5),
                                   ],
                                 ),
                               ),
+                              _isShippingFree
+                                  ? Text(
+                                    'Shipping Free',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.lightGreen,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  )
+                                  : SizedBox.shrink(),
                             ],
                           ),
                         ),
@@ -187,8 +143,30 @@ class ProductView extends StatelessWidget {
                   ),
                 ),
       ),
+      floatingActionButton:
+          controller.product.value.backordersAllowed == null ||
+                  controller.product.value.backordersAllowed!
+              ? SizedBox.shrink()
+              : FloatingActionButton.extended(
+                onPressed: () {},
+                backgroundColor: Colors.black87,
+                label: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.shopping_basket_outlined, color: Colors.white),
+                    sp10,
+                    Text('Add To Card', style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+              ),
     );
   }
+
+  bool get _isShippingFree =>
+      controller.product.value.shippingRequired! &&
+              controller.product.value.shippingClassId == 0
+          ? true
+          : false;
 
   Widget get _getImageController => SizedBox(
     width: Get.width - 10,
@@ -198,7 +176,7 @@ class ProductView extends StatelessWidget {
             ? SizedBox()
             : CarouselSlider(
               options: CarouselOptions(
-                height: Get.height / 2.5,
+                height: Get.height / 3,
                 autoPlay: true,
                 aspectRatio: 2.0,
                 enlargeCenterPage: true,
@@ -213,4 +191,35 @@ class ProductView extends StatelessWidget {
                   }).toList(),
             ),
   );
+}
+
+class _ColumnSection extends StatelessWidget {
+  final String title;
+  final String value;
+  final TextStyle? style;
+  const _ColumnSection({
+    required this.title,
+    required this.style,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+
+        children: [
+          Text(title, style: TextStyle(color: Colors.grey)),
+          Text(
+            value,
+            style:
+                style == null
+                    ? TextStyle(fontSize: 16, color: Colors.black87)
+                    : style!.copyWith(fontSize: 16, color: Colors.black87),
+          ),
+        ],
+      ),
+    );
+  }
 }

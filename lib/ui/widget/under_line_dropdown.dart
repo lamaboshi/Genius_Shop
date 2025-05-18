@@ -4,6 +4,7 @@ class UnderlineDropdown extends StatefulWidget {
   final List<String> items;
   final String? hintText;
   final String? value;
+  final bool isReadOnly;
   final ValueChanged<String?>? onChanged;
 
   const UnderlineDropdown({
@@ -11,6 +12,7 @@ class UnderlineDropdown extends StatefulWidget {
     this.hintText,
     this.value,
     this.onChanged,
+    this.isReadOnly = false,
     super.key,
   });
 
@@ -61,14 +63,17 @@ class _UnderlineDropdownState extends State<UnderlineDropdown> {
                       child: Text(value),
                     );
                   }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  selectedValue = newValue;
-                });
-                if (widget.onChanged != null) {
-                  widget.onChanged!(newValue);
-                }
-              },
+              onChanged:
+                  widget.isReadOnly
+                      ? null
+                      : (String? newValue) {
+                        setState(() {
+                          selectedValue = newValue;
+                        });
+                        if (widget.onChanged != null) {
+                          widget.onChanged!(newValue);
+                        }
+                      },
             ),
           ),
           Container(

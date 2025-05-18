@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:overlayment/overlayment.dart';
 
 import '../../../core/helper/constens.dart';
+import '../../../domain/model/product_category.dart';
 import '../controller/home_controller.dart';
 
 class HeaderSection extends StatelessWidget {
@@ -51,6 +52,7 @@ class HeaderSection extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () async {
+                    controller.filter.value.categories = Category();
                     await Overlayment.show(
                       context: context,
                       OverPanel(

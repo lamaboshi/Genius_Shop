@@ -11,15 +11,9 @@ class LogInController extends GetxController {
 
   Future<void> logIn() async {
     isLoading.value = true;
-    final result = await AuthRepository().login(
-      user.value.email!,
-      user.value.password!,
-    );
+    await AuthRepository().login(user.value.email!, user.value.password!);
     isLoading.value = false;
 
-    Get.rootDelegate.offAndToNamed(
-      AppRouter.home,
-      arguments: rememberMe.value ? null : result,
-    );
+    Get.rootDelegate.offAndToNamed(AppRouter.home);
   }
 }

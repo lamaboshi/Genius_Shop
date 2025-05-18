@@ -14,21 +14,15 @@ class AuthRepository extends IAuthRepository {
   final _storage = Get.find<StorageService>();
 
   @override
-  Future<User?> login(
-    String username,
-    String password, {
-    bool rememberMe = true,
-  }) async {
+  Future<User?> login(String username, String password) async {
     try {
       final response = await _dio.post(
         '$BASE_Endpoint/wp-json/jwt-auth/v1/token',
         data: {'username': username, 'password': password},
       );
-      if (rememberMe) {
-        _storage.saveData(StorageService.authToken, response.data['token']);
-      }
+      _storage.saveData(StorageService.authToken, response.data['token']);
 
-      final result = await getCurrentUser(rememberMe: rememberMe);
+      final result = await getCurrentUser();
       return result;
     } on DioException catch (e) {
       print('Login failed: ${e.response?.data}');
@@ -37,19 +31,23 @@ class AuthRepository extends IAuthRepository {
   }
 
   @override
-  Future<User?> getCurrentUser({bool rememberMe = true}) async {
+  Future<User?> getCurrentUser() async {
     final token = _storage.getData(StorageService.authToken);
     print('the Token : $token');
     try {
-      final response = await _dio.get(
+      final response = await _dio.post(
         '$BASE_Endpoint/wp-json/wp/v2/users/me',
-        options: Options(headers: {'Authorization': 'Bearer $token'}),
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
       );
 
       if (response.statusCode == 200) {
-        if (rememberMe) {
-          _storage.saveData(StorageService.userData, jsonEncode(response.data));
-        }
+        _storage.saveData(StorageService.userData, jsonEncode(response.data));
         return User.fromMap(response.data);
       }
     } on DioException catch (e) {
@@ -62,7 +60,7 @@ class AuthRepository extends IAuthRepository {
   User? getUserData() {
     var data =
         jsonDecode(_storage.getData(StorageService.userData)!) as dynamic;
-    print(data);
+
     if (data != null) {
       final d = User.fromMap(data);
       print(d);

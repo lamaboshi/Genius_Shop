@@ -29,6 +29,7 @@ class AppRouter {
   static final product = '/product';
   static final profile = '/profile';
   static final editProfile = '/edit_profile';
+  static final report = '/report';
 
   static final routes = [
     GetPage(
@@ -46,6 +47,7 @@ class AppRouter {
       page: () => const RegisterView(),
       binding: RegisterBinding(),
     ),
+    // GetPage(name: report, page: () => ReportView(), binding: ReportBinding()),
     GetPage(
       name: product,
       page: () => ProductView(),

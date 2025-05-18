@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:genius_shop/Pages/home/controller/home_controller.dart';
 import 'package:genius_shop/app_router.dart';
-
+import 'package:badges/badges.dart' as badges;
 import 'package:get/get.dart';
 
 class HomeView extends StatelessWidget {
@@ -13,10 +13,7 @@ class HomeView extends StatelessWidget {
     return Obx(
       () => Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.segment_rounded),
-          ),
+          leading: SizedBox.shrink(),
           actions: [
             Padding(
               padding: const EdgeInsets.all(8),
@@ -24,21 +21,24 @@ class HomeView extends StatelessWidget {
                 () => IconButton(
                   onPressed: () {
                     if (controller.pageIndex.value == 3) {
-                      Get.rootDelegate.toNamed(AppRouter.editProfile);
+                      Get.rootDelegate.toNamed(
+                        AppRouter.editProfile,
+                        arguments: true,
+                      );
+                    } else {
+                      controller.pageIndex.value = 2;
                     }
                   },
-                  style: ButtonStyle(
-                    shape: WidgetStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        side: BorderSide(color: Colors.grey),
-                      ),
-                    ),
-                  ),
+
                   icon:
                       controller.pageIndex.value == 3
                           ? Icon(Icons.edit)
-                          : Icon(Icons.shopping_bag_outlined),
+                          : badges.Badge(
+                            badgeContent: Text(
+                              controller.countItem.value.toString(),
+                            ),
+                            child: Icon(Icons.shopping_bag_outlined),
+                          ),
                 ),
               ),
             ),
@@ -69,7 +69,10 @@ class HomeView extends StatelessWidget {
               label: '.',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_bag_outlined, size: 30.0),
+              icon: badges.Badge(
+                badgeContent: Text(controller.countItem.value.toString()),
+                child: Icon(Icons.shopping_bag_outlined, size: 30.0),
+              ),
               label: '.',
             ),
             BottomNavigationBarItem(

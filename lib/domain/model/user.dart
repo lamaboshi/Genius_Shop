@@ -4,19 +4,23 @@ import 'dart:convert';
 class User {
   int? id;
   String? firstName;
-  final String? lastName;
+  String? lastName;
   String? userName;
   String? name;
+  String? slug;
+  String? nickname;
   String? password;
   String? email;
   String? description;
-  String? role;
+  List<String>? role;
   bool? isSuperAdmin;
   String? avatarUrl;
   User({
     this.id,
     this.firstName,
     this.lastName,
+    this.nickname,
+    this.slug,
     this.role,
     this.name,
     this.userName,
@@ -33,6 +37,7 @@ class User {
       'last_name': lastName,
       'slug': userName,
       'username': userName,
+      'nickname': nickname,
       'name': name,
       'email': email,
       'password': password,
@@ -46,9 +51,15 @@ class User {
       firstName: map['first_name'],
       lastName: map['last_name'],
       name: map['name'],
-      userName: map['slug'],
-      role: map['role'],
-      avatarUrl: map['avatar_url'],
+      userName: map['username'],
+      nickname: map['nickname'],
+      slug: map['slug'],
+      role:
+          map['roles'] != null
+              ? List<String>.from((map['roles'] as List))
+              : null,
+      avatarUrl: map['avatar_urls']['48'],
+
       email: map['email'],
       isSuperAdmin: map['is_super_admin'] as bool,
     );

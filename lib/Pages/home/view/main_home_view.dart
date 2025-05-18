@@ -19,7 +19,7 @@ class MainHomeView extends StatelessWidget {
         HeaderSection(),
         Column(
           children: [
-            ListCategoriesView(),
+            ListCategoriesView(isFilter: false),
             Obx(
               () => ProductPagination(
                 currentPage: controller.currentPage.value,

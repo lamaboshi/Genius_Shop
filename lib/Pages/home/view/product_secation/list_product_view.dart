@@ -4,6 +4,8 @@ import 'package:genius_shop/app_router.dart';
 import 'package:genius_shop/domain/model/product.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/api/card_service.dart';
+
 class ListProductView extends StatelessWidget {
   const ListProductView({super.key});
 
@@ -53,7 +55,7 @@ class ProductCard extends StatelessWidget {
             elevation: 0,
             child: SizedBox(
               width: Get.width / 2.6,
-              height: Get.height / 4.5,
+              height: Get.height / 4,
               child: Stack(
                 children: [
                   item.images == null || item.images!.isEmpty
@@ -62,18 +64,25 @@ class ProductCard extends StatelessWidget {
                         item.images!.first.src!,
                         fit: BoxFit.fill,
                         width: Get.width / 2.6,
-                        height: Get.height / 4.5,
+                        height: Get.height / 4,
                       ),
                   Padding(
                     padding: const EdgeInsets.all(4),
                     child: Align(
                       alignment: Alignment.bottomRight,
-                      child: Card(
-                        elevation: 0,
-                        color: Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.all(6),
-                          child: Icon(Icons.shopping_bag_outlined),
+                      child: InkWell(
+                        onTap: () async {
+                          await CardService.addItems(item.id.toString());
+
+                          Get.find<HomeController>().updateCountCard();
+                        },
+                        child: Card(
+                          elevation: 0,
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(6),
+                            child: Icon(Icons.shopping_bag_outlined),
+                          ),
                         ),
                       ),
                     ),
@@ -96,6 +105,25 @@ class ProductCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  item.onSale!
+                      ? Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Card(
+                            elevation: 0,
+                            color: Colors.green,
+                            child: Padding(
+                              padding: const EdgeInsets.all(6),
+                              child: Text(
+                                '!Sale',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                      : SizedBox.shrink(),
                 ],
               ),
             ),

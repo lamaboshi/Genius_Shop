@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:genius_shop/Pages/home/controller/home_controller.dart';
 import 'package:genius_shop/Pages/home/view/product_secation/list_categories_view.dart';
+import 'package:genius_shop/core/helper/build_context_extension.dart';
 import 'package:genius_shop/core/helper/constens.dart';
 import 'package:genius_shop/ui/widget/action_button.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:overlayment/overlayment.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
@@ -22,12 +24,27 @@ class FilterDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(),
+              TextButton(
+                style: context.actionBorderButtonStyle,
+                onPressed: () {
+                  Overlayment.dismissLast();
+                  controller.filter.value = ProductFilter();
+                  controller.products.assignAll(controller.basedProducts);
+                },
+                child: Text('Clear Filter'),
+              ),
+            ],
+          ),
           sp20,
           Text(
             'Category',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          ListCategoriesView(),
+          ListCategoriesView(isFilter: true),
           sp20,
           Obx(
             () => Column(

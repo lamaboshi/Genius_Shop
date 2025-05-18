@@ -1,11 +1,14 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:genius_shop/domain/model/product_category.dart';
 import 'package:get/get.dart';
+
+import 'package:genius_shop/domain/model/product_category.dart';
 
 import '../../controller/home_controller.dart';
 
 class ListCategoriesView extends StatelessWidget {
-  const ListCategoriesView({super.key});
+  final bool isFilter;
+  const ListCategoriesView({super.key, this.isFilter = false});
 
   @override
   Widget build(BuildContext context) {
@@ -19,23 +22,20 @@ class ListCategoriesView extends StatelessWidget {
               padding: const EdgeInsets.all(4),
               child: InkWell(
                 onTap: () {
-                  controller.selectedCategory.value = Category();
-                  controller.updateItemCategory();
+                  if (isFilter) {
+                    controller.filter.value.categories = Category();
+                    controller.filter.refresh();
+                  } else {
+                    controller.selectedCategory.value = Category();
+                    controller.updateItemCategory();
+                  }
                 },
                 child: Chip(
                   label: Text(
                     "All",
-                    style: TextStyle(
-                      color:
-                          controller.selectedCategory.value.name == null
-                              ? Colors.white
-                              : null,
-                    ),
+                    style: TextStyle(color: getIsFilter ? Colors.white : null),
                   ),
-                  backgroundColor:
-                      controller.selectedCategory.value.name == null
-                          ? Colors.black87
-                          : null,
+                  backgroundColor: getIsFilter ? Colors.black87 : null,
                 ),
               ),
             ),
@@ -44,23 +44,24 @@ class ListCategoriesView extends StatelessWidget {
                 padding: const EdgeInsets.all(4),
                 child: InkWell(
                   onTap: () {
-                    controller.selectedCategory.value = e;
-                    controller.updateItemCategory();
+                    if (isFilter) {
+                      controller.filter.value.categories = e;
+                      controller.filter.refresh();
+                      print(controller.filter.value.categories!.name);
+                    } else {
+                      controller.selectedCategory.value = e;
+                      controller.updateItemCategory();
+                    }
                   },
                   child: Chip(
                     label: Text(
                       e.name ?? '',
                       style: TextStyle(
-                        color:
-                            controller.selectedCategory.value.name == e.name
-                                ? Colors.white
-                                : null,
+                        color: getIsSelection(e.name!) ? Colors.white : null,
                       ),
                     ),
                     backgroundColor:
-                        controller.selectedCategory.value.name == e.name
-                            ? Colors.black87
-                            : null,
+                        getIsSelection(e.name!) ? Colors.black87 : null,
                   ),
                 ),
               ),
@@ -70,4 +71,23 @@ class ListCategoriesView extends StatelessWidget {
       ),
     );
   }
+
+  bool get getIsFilter =>
+      isFilter &&
+              (Get.find<HomeController>().filter.value.categories == null ||
+                  Get.find<HomeController>().filter.value.categories!.name ==
+                      null)
+          ? true
+          : !isFilter &&
+              Get.find<HomeController>().selectedCategory.value.name == null
+          ? true
+          : false;
+  bool getIsSelection(String name) =>
+      isFilter &&
+              Get.find<HomeController>().filter.value.categories != null &&
+              Get.find<HomeController>().filter.value.categories!.name == name
+          ? true
+          : Get.find<HomeController>().selectedCategory.value.name == name
+          ? true
+          : false;
 }

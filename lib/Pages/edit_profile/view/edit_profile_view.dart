@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:genius_shop/Pages/edit_profile/controller/edit_profile_controller.dart';
+import 'package:genius_shop/core/helper/build_context_extension.dart';
 import 'package:get/get.dart';
 
+import '../../../core/api/user_role.dart';
 import '../../../core/helper/constens.dart';
 import '../../../ui/widget/action_button.dart';
 import '../../../ui/widget/text_field.dart';
@@ -14,12 +16,21 @@ class EditProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<EditProfileController>();
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          style: context.actionBorderButtonStyle,
+          onPressed: () {
+            Get.back();
+          },
+          icon: Icon(Icons.arrow_back),
+        ),
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              SizedBox(height: Get.height / 7),
+              sp20,
               Column(
                 children: [
                   Text(
@@ -33,20 +44,41 @@ class EditProfileView extends StatelessWidget {
                 ],
               ),
               sp20,
-              Container(
-                width: 150,
-                height: 150,
-                decoration: BoxDecoration(
-                  color: Colors.black87,
-                  borderRadius: BorderRadius.circular(50),
-                  image:
-                      controller.user.value.avatarUrl == null
-                          ? null
-                          : DecorationImage(
-                            image: NetworkImage(
-                              controller.user.value.avatarUrl ?? '',
-                            ),
-                          ),
+              SizedBox(
+                width: 130,
+                height: 130,
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black87,
+                        borderRadius: BorderRadius.circular(50),
+                        image:
+                            controller.user.value.avatarUrl == null
+                                ? null
+                                : DecorationImage(
+                                  image: NetworkImage(
+                                    controller.user.value.avatarUrl!,
+                                  ),
+                                  fit: BoxFit.fill,
+                                ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: IconButton(
+                        style: context.actionButtonStyle,
+                        onPressed: !controller.isEdit.value ? null : () {},
+                        icon: Icon(
+                          Icons.camera_alt_outlined,
+                          color:
+                              !controller.isEdit.value
+                                  ? Colors.grey
+                                  : Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -57,60 +89,82 @@ class EditProfileView extends StatelessWidget {
                     children: [
                       TextFieldWidget(
                         label: 'First Name',
+                        isReadOnly: !controller.isEdit.value,
+                        value: controller.user.value.firstName ?? "",
                         onChanged: (String value) {
-                          controller.user.value.email = value;
+                          controller.user.value.firstName = value;
                         },
                         textInputType: TextInputType.text,
                       ),
                       TextFieldWidget(
                         label: 'Last Name',
+                        isReadOnly: !controller.isEdit.value,
+                        value: controller.user.value.lastName ?? "",
+                        onChanged: (String value) {
+                          controller.user.value.lastName = value;
+                        },
+                        textInputType: TextInputType.text,
+                      ),
+                      TextFieldWidget(
+                        label: 'Email',
+                        isReadOnly: !controller.isEdit.value,
+                        value: controller.user.value.email ?? "",
                         onChanged: (String value) {
                           controller.user.value.email = value;
+                        },
+                        textInputType: TextInputType.text,
+                      ),
+                      TextFieldWidget(
+                        label: 'User Name',
+                        isReadOnly: !controller.isEdit.value,
+                        value: controller.user.value.userName ?? "",
+                        onChanged: (String value) {
+                          controller.user.value.userName = value;
                         },
                         textInputType: TextInputType.text,
                       ),
                       UnderlineDropdown(
-                        hintText: 'Role',
-                        items: ['user', 'user_1', 'user_2'],
+                        hintText:
+                            controller.isEdit.value
+                                ? 'Role'
+                                : controller.user.value.role!.first,
+                        isReadOnly: !controller.isEdit.value,
+                        items: UserRole.values.map((t) => t.name).toList(),
                       ),
 
-                      TextFieldWidget(
-                        label: 'Email',
-                        onChanged: (String value) {
-                          controller.user.value.email = value;
-                        },
-                        textInputType: TextInputType.text,
-                      ),
-
-                      TextFieldWidget(
-                        label: 'Password',
-                        onChanged: (value) {
-                          controller.user.value.password = value;
-                        },
-                        textInputType: TextInputType.text,
-                      ),
+                      controller.isEdit.value
+                          ? TextFieldWidget(
+                            label: 'Password',
+                            onChanged: (value) {
+                              controller.user.value.password = value;
+                            },
+                            textInputType: TextInputType.text,
+                          )
+                          : SizedBox.shrink(),
                     ],
                   ),
                 ),
               ),
               sp10,
 
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Obx(
-                  () =>
-                      controller.isLoading.value
-                          ? Center(child: CircularProgressIndicator())
-                          : ActionButton(
-                            title: Text(
-                              'LogIn',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            withBorder: false,
-                            onPressed: () async {},
-                          ),
-                ),
-              ),
+              !controller.isEdit.value
+                  ? SizedBox.shrink()
+                  : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Obx(
+                      () =>
+                          controller.isLoading.value
+                              ? Center(child: CircularProgressIndicator())
+                              : ActionButton(
+                                title: Text(
+                                  'LogIn',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                withBorder: false,
+                                onPressed: () async {},
+                              ),
+                    ),
+                  ),
               sp20,
             ],
           ),
