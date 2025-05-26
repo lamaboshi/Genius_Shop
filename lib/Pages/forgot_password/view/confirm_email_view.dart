@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:genius_shop/Pages/forgot_password/controller/forget_password_controller.dart';
-import 'package:genius_shop/ui/widget/text_field.dart';
 import 'package:get/get.dart';
 
 import '../../../core/helper/constens.dart';
@@ -40,14 +39,14 @@ class ConfirmEmailView extends StatelessWidget {
                 ),
               ),
               SizedBox(height: Get.height / 17),
-              TextFieldWidget(
-                onChanged: (value) {
-                  controller.email.value = value;
-                },
-                textInputType: TextInputType.text,
-                label: 'Email',
-              ),
 
+              // TextFieldWidget(
+              //   onChanged: (value) {
+              //     controller.email.value = value;
+              //   },
+              //   textInputType: TextInputType.text,
+              //   label: 'Email',
+              // ),
               sp20,
               Padding(
                 padding: const EdgeInsets.all(8.0),

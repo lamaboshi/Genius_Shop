@@ -16,6 +16,7 @@ class ProductsRepository extends IProductsRepository {
   final token = Get.find<StorageService>().getData(StorageService.authToken);
   @override
   Future<List<Product>> getAllProducts(int page, perPage) async {
+    logger.d(token);
     final response = await DioApiHandler.execute(
       apiCall:
           () => _dio.get(

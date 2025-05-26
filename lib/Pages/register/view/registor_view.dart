@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:genius_shop/Pages/register/controller/register_controller.dart';
 import 'package:genius_shop/app_router.dart';
-import 'package:genius_shop/ui/widget/text_field.dart';
 import 'package:get/get.dart';
 
 import '../../../core/helper/constens.dart';
@@ -30,76 +29,76 @@ class RegisterView extends StatelessWidget {
                   style: TextStyle(color: Colors.grey),
                 ),
                 SizedBox(height: Get.height / 18),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Form(
-                    key: controller.formKey,
-                    child: Column(
-                      children: [
-                        TextFieldWidget(
-                          onChanged: (value) {
-                            controller.user.value.email = value;
-                          },
-                          textInputType: TextInputType.text,
-                          label: 'Email',
-                        ),
-                        TextFieldWidget(
-                          onChanged: (value) {
-                            controller.user.value.name = value;
-                          },
-                          textInputType: TextInputType.text,
-                          label: 'name',
-                        ),
-                        TextFieldWidget(
-                          onChanged: (value) {
-                            controller.user.value.userName = value;
-                          },
-                          textInputType: TextInputType.text,
-                          label: 'user Name',
-                        ),
 
-                        TextFieldWidget(
-                          label: 'Create Password',
-                          isPassword: true,
-                          textInputType: TextInputType.visiblePassword,
-                          onChanged: (value) {
-                            controller.user.value.password = value;
-                          },
-                          onPasswordStrengthChanged: (strength) {},
-                          validator: (value) {
-                            if (value == null || value.isEmpty)
-                              return 'Please enter a password';
-                            if (value.length < 8)
-                              return 'Password must be at least 8 characters';
-                            return null;
-                          },
-                        ),
-                        TextFieldWidget(
-                          label: 'Confirm Password',
-                          isPassword: true,
-                          textInputType: TextInputType.visiblePassword,
-                          onChanged: (value) {
-                            controller.password.value = value;
-                          },
-                          onPasswordStrengthChanged: (strength) {},
-                          validator: (value) {
-                            if (value == null || value.isEmpty)
-                              return 'Please enter a password';
-                            if (controller.user.value.password!.compareTo(
-                                  value,
-                                ) !=
-                                0)
-                              return 'Passwords do not match';
-                            if (value.length < 8)
-                              return 'Password must be at least 8 characters';
-                            return null;
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Form(
+                //     key: controller.formKey,
+                //     child: Column(
+                //       children: [
+                //         TextFieldWidget(
+                //           onChanged: (value) {
+                //             controller.user.value.email = value;
+                //           },
+                //           textInputType: TextInputType.text,
+                //           label: 'Email',
+                //         ),
+                //         TextFieldWidget(
+                //           onChanged: (value) {
+                //             controller.user.value.name = value;
+                //           },
+                //           textInputType: TextInputType.text,
+                //           label: 'name',
+                //         ),
+                //         TextFieldWidget(
+                //           onChanged: (value) {
+                //             controller.user.value.userName = value;
+                //           },
+                //           textInputType: TextInputType.text,
+                //           label: 'user Name',
+                //         ),
 
+                //         TextFieldWidget(
+                //           label: 'Create Password',
+                //           isPassword: true,
+                //           textInputType: TextInputType.visiblePassword,
+                //           onChanged: (value) {
+                //             controller.user.value.password = value;
+                //           },
+                //           onPasswordStrengthChanged: (strength) {},
+                //           validator: (value) {
+                //             if (value == null || value.isEmpty)
+                //               return 'Please enter a password';
+                //             if (value.length < 8)
+                //               return 'Password must be at least 8 characters';
+                //             return null;
+                //           },
+                //         ),
+                //         TextFieldWidget(
+                //           label: 'Confirm Password',
+                //           isPassword: true,
+                //           textInputType: TextInputType.visiblePassword,
+                //           onChanged: (value) {
+                //             controller.password.value = value;
+                //           },
+                //           onPasswordStrengthChanged: (strength) {},
+                //           validator: (value) {
+                //             if (value == null || value.isEmpty)
+                //               return 'Please enter a password';
+                //             if (controller.user.value.password!.compareTo(
+                //                   value,
+                //                 ) !=
+                //                 0)
+                //               return 'Passwords do not match';
+                //             if (value.length < 8)
+                //               return 'Password must be at least 8 characters';
+                //             return null;
+                //           },
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -152,13 +151,7 @@ class RegisterView extends StatelessWidget {
                       onTap: () {
                         Get.rootDelegate.toNamed(AppRouter.logIn);
                       },
-                      child: Text(
-                        'Login',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17,
-                        ),
-                      ),
+                      child: Text('Login', style: styleTitle),
                     ),
                   ],
                 ),

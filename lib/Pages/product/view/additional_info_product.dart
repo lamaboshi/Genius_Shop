@@ -16,10 +16,7 @@ class AdditionalInformationProduct extends StatelessWidget {
             : Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Categories',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                Text('Categories', style: styleTitle),
                 Wrap(
                   children:
                       controller.product.value.categories!
@@ -36,10 +33,7 @@ class AdditionalInformationProduct extends StatelessWidget {
             : Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Tags',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                Text('Tags', style: styleTitle),
                 Wrap(
                   children:
                       controller.product.value.tags!

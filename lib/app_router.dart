@@ -1,5 +1,9 @@
+import 'package:genius_shop/Pages/cart_page/binding/cart_binding.dart';
+import 'package:genius_shop/Pages/cart_page/view/cart_view.dart';
 import 'package:genius_shop/Pages/edit_profile/binding/edit_profile_binding.dart';
 import 'package:genius_shop/Pages/edit_profile/view/edit_profile_view.dart';
+import 'package:genius_shop/Pages/favorites/binding/favorites_binding.dart';
+import 'package:genius_shop/Pages/favorites/view/favorites_view.dart';
 import 'package:genius_shop/Pages/login/view/login_view.dart';
 import 'package:genius_shop/Pages/product/bindings/product_binding.dart';
 import 'package:genius_shop/Pages/product/view/product_view.dart';
@@ -30,6 +34,8 @@ class AppRouter {
   static final profile = '/profile';
   static final editProfile = '/edit_profile';
   static final report = '/report';
+  static final cart = '/cart';
+  static final favorites = '/favorites';
 
   static final routes = [
     GetPage(
@@ -37,11 +43,7 @@ class AppRouter {
       page: () => const SplashScreen(),
       binding: SplashBinding(),
     ),
-    GetPage(
-      name: logIn,
-      page: () => const LoginView(),
-      binding: LogInBinding(),
-    ),
+    GetPage(name: logIn, page: () => LoginView(), binding: LogInBinding()),
     GetPage(
       name: register,
       page: () => const RegisterView(),
@@ -58,6 +60,7 @@ class AppRouter {
       page: () => EditProfileView(),
       binding: EditProfileBinding(),
     ),
+
     GetPage(
       name: password,
       page: () => const ForgetPasswordView(),
@@ -74,8 +77,17 @@ class AppRouter {
       name: home,
       page: () => const HomeView(),
       binding: HomeBinding(),
-      bindings: [HomeBinding(), ProfileBinding()],
-      children: [GetPage(name: profile, page: () => const ProfileView())],
+      bindings: [
+        HomeBinding(),
+        ProfileBinding(),
+        CartBinding(),
+        FavoritesBinding(),
+      ],
+      children: [
+        GetPage(name: profile, page: () => const ProfileView()),
+        GetPage(name: cart, page: () => const CartView()),
+        GetPage(name: favorites, page: () => FavoritesView()),
+      ],
       middlewares: [AuthMiddleware()],
     ),
   ];

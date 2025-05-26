@@ -2,75 +2,126 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class TextFieldWidget extends StatefulWidget {
-  final String? value;
-  final String? label;
-  final int? minLines;
-  final double? width;
-  final ValueChanged<String>? onChanged;
-  final TextInputType? textInputType;
+  final Function(String?)? onSaved;
+  final Function(DateTime)? datePickerCallBack;
+  final Function(String)? onFieldSubmitted;
+  final Function(bool?)? onFocusChanged;
+  final Iterable<String>? autofillHints;
+  final bool autofocus;
+  final bool datePicker;
+  final String? defaultText;
+  final FocusNode? focusNode;
   final InputBorder? focusedBorder;
-  final InputBorder? enabledBorder;
-  final TextEditingController? controller;
-  final bool? isNumberFormat;
-  final IconData? icon;
-  final bool isReadOnly;
-  final bool isPassword;
-  final String? Function(String?)? validator;
-  final void Function(double)? onPasswordStrengthChanged; // New callback
+  final DateTime? initialDate;
+  final Duration? initialTime;
+  final InputBorder? inputBorder;
+  final List<TextInputFormatter>? inputFormatters;
 
-  const TextFieldWidget({
-    this.value,
-    this.label,
-    required this.onChanged,
-    required this.textInputType,
+  ///add shadow box the TextFormField
+  ///preferred to use along with
+  ///`inputBorder: InputBorder.none`
+  final bool isShadowAdded;
+
+  final TextInputType keyboardType;
+  final int? maxLines;
+  final int? minLines;
+  final bool obscureText;
+  final ValueChanged<String>? onChanged;
+
+  final IconData? prefixIcon;
+  final Color primaryColor;
+  final bool readOnly;
+  final TextDirection textDirection;
+  final TextInputAction textInputAction;
+  final String title;
+  final FormFieldValidator<String?> validator;
+  final double width;
+
+  const TextFieldWidget(
+    this.title, {
+    super.key,
+    this.defaultText,
+    this.primaryColor = Colors.amber,
+    this.onSaved,
+    this.maxLines,
+    this.minLines = 1,
+    this.datePicker = false,
+    this.keyboardType = TextInputType.name,
+    this.datePickerCallBack,
+    this.prefixIcon,
+    this.onChanged,
+    this.onFieldSubmitted,
+    this.width = 500,
+    this.obscureText = false,
+    this.textInputAction = TextInputAction.next,
+    this.validator = _defaultValidator,
+    this.inputFormatters,
+    this.textDirection = TextDirection.ltr,
+    this.readOnly = false,
+    this.autofillHints,
+    this.autofocus = false,
+    this.focusNode,
+    this.initialDate,
+    this.initialTime,
+    this.inputBorder,
+    this.isShadowAdded = false,
     this.focusedBorder,
-    this.enabledBorder,
-    this.width,
-    this.controller,
-    this.minLines,
-    this.icon,
-    this.validator,
-    this.isNumberFormat = false,
-    this.isReadOnly = false,
-    this.isPassword = false,
-    this.onPasswordStrengthChanged,
-    Key? key,
-  }) : super(key: key);
+    this.onFocusChanged,
+  });
 
   @override
   State<TextFieldWidget> createState() => _TextFieldWidgetState();
 }
 
 class _TextFieldWidgetState extends State<TextFieldWidget> {
-  late final TextEditingController _controller;
-  bool _obscureText = true;
-  // double _passwordStrength = 0;
+  FocusNode? focusNode = FocusNode();
+  bool? isFocusing;
+
+  final _controller = TextEditingController();
+  late bool _isVisible;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
-    _controller =
-        widget.controller ?? TextEditingController(text: widget.value);
-    _obscureText = widget.isPassword;
+    _isVisible = widget.obscureText;
+    if (widget.focusNode != null) {
+      focusNode = widget.focusNode;
+    }
+    isFocusing = focusNode?.hasFocus;
+    focusNode?.addListener(() {
+      isFocusing = focusNode?.hasFocus;
+      widget.onFocusChanged?.call(isFocusing);
+    });
   }
 
-  // double _calculatePasswordStrength(String password) {
-  //   double strength = 0;
-
-  //   // Length check
-  //   if (password.length >= 8) strength += 0.3;
-  //   if (password.length >= 12) strength += 0.2;
-
-  //   // Complexity checks
-  //   if (password.contains(RegExp(r'[A-Z]'))) strength += 0.2;
-  //   if (password.contains(RegExp(r'[0-9]'))) strength += 0.2;
-  //   if (password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) strength += 0.1;
-
-  //   return strength.clamp(0, 1);
-  // }
+  void onFieldSubmitted(String value) {
+    if (widget.onFieldSubmitted != null) {
+      widget.onFieldSubmitted!(value);
+    }
+    _isVisible = !_isVisible;
+  }
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if ((widget.defaultText?.isNotEmpty ?? false) ||
+          (widget.defaultText?.isNotEmpty ?? false)) {
+        _controller.value = TextEditingValue(
+          text: widget.defaultText ?? '',
+
+          ///prevent reversed text :!
+          selection: TextSelection.collapsed(
+            offset: widget.defaultText?.length ?? 0,
+          ),
+        );
+      }
+    });
     return Padding(
       padding: const EdgeInsets.all(4),
       child: Column(
@@ -79,98 +130,69 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
           SizedBox(
             width: widget.width,
             child: TextFormField(
-              key: Key(widget.label!),
-              validator: widget.validator,
-              focusNode: FocusNode(),
-              readOnly: widget.isReadOnly,
+              focusNode: focusNode,
+              autofocus: widget.autofocus,
+              autofillHints: widget.autofillHints,
+              textDirection: widget.textDirection,
+              inputFormatters: widget.inputFormatters,
               controller: _controller,
-              keyboardType: widget.textInputType,
-              obscureText: widget.isPassword ? _obscureText : false,
-              textAlignVertical: TextAlignVertical.center,
-              minLines: widget.minLines,
-              maxLines: (widget.minLines ?? 0) + 1,
-              inputFormatters:
-                  widget.isNumberFormat!
-                      ? [FilteringTextInputFormatter.digitsOnly]
-                      : null,
+              obscureText: _isVisible,
+              enableSuggestions: true,
+              onChanged: widget.onChanged,
+              keyboardType: widget.keyboardType,
+              onSaved: widget.onSaved,
+              textInputAction: widget.textInputAction,
+              onFieldSubmitted: onFieldSubmitted,
+              cursorColor: widget.primaryColor,
+              readOnly: widget.datePicker || widget.readOnly,
+              enabled: !widget.readOnly,
+              style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
-                icon:
-                    widget.icon == null
+                // contentPadding: EdgeInsets.zero,
+                enabledBorder: widget.inputBorder,
+                focusedBorder: widget.focusedBorder,
+                border: widget.inputBorder,
+                labelText: widget.title,
+                labelStyle: TextStyle(color: Colors.black),
+                hintText: widget.title,
+                hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
+                prefixIcon:
+                    widget.prefixIcon == null
                         ? null
-                        : Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Icon(
-                            widget.icon!,
-                            color: Colors.purple.shade100,
-                          ),
+                        : Icon(
+                          widget.prefixIcon,
+                          size: 20,
+                          color: widget.primaryColor,
                         ),
-                enabledBorder:
-                    widget.enabledBorder ??
-                    UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                label: Text(widget.label!),
+                suffix: null,
+                icon: null,
                 suffixIcon:
-                    widget.isPassword
+                    widget.obscureText
                         ? IconButton(
                           icon: Icon(
-                            _obscureText
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Colors.grey,
+                            _isVisible
+                                ? Icons.visibility_off
+                                : Icons.visibility,
                           ),
                           onPressed: () {
-                            setState(() {
-                              _obscureText = !_obscureText;
-                            });
+                            _isVisible = !_isVisible;
+                            setState(() {});
                           },
                         )
                         : null,
               ),
-              onChanged: (value) {
-                widget.onChanged?.call(value);
-                // if (widget.isPassword) {
-                //   final strength = _calculatePasswordStrength(value);
-                //   setState(() {
-                //     _passwordStrength = strength;
-                //   });
-                //   widget.onPasswordStrengthChanged?.call(strength);
-                // }
-              },
+              maxLines: _isVisible ? 1 : widget.maxLines,
+              minLines: widget.minLines ?? 1,
+              onTap: () async {},
+              validator: widget.validator,
             ),
           ),
-          // if (widget.isPassword) ...[
-          //   const SizedBox(height: 4),
-          //   LinearProgressIndicator(
-          //     value: _passwordStrength,
-          //     backgroundColor: Colors.grey[200],
-          //     color:
-          //         _passwordStrength < 0.3
-          //             ? Colors.red
-          //             : _passwordStrength < 0.6
-          //             ? Colors.orange
-          //             : Colors.green,
-          //   ),
-          //   const SizedBox(height: 4),
-          //   Text(
-          //     _passwordStrength < 0.3
-          //         ? 'Weak'
-          //         : _passwordStrength < 0.6
-          //         ? 'Fair'
-          //         : 'Strong',
-          //     style: TextStyle(
-          //       color:
-          //           _passwordStrength < 0.3
-          //               ? Colors.red
-          //               : _passwordStrength < 0.6
-          //               ? Colors.orange
-          //               : Colors.green,
-          //       fontSize: 12,
-          //     ),
-          //   ),
-          // ],
         ],
       ),
     );
   }
+}
+
+String? _defaultValidator(String? s) {
+  return (s != null && s.trim().isEmpty) ? 'validation.required' : null;
 }

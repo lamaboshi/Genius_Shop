@@ -33,10 +33,7 @@ class ProductTitle extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  controller.product.value.name ?? '',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
+                Text(controller.product.value.name ?? '', style: styleTitle),
                 Row(
                   children: [
                     Text(

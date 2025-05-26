@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:genius_shop/Pages/cart_page/controller/cart_controller.dart';
+import 'package:genius_shop/Pages/favorites/controller/favorites_controller.dart';
 import 'package:genius_shop/Pages/home/controller/home_controller.dart';
 import 'package:genius_shop/app_router.dart';
 import 'package:genius_shop/domain/model/product.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/api/card_service.dart';
+import '../../../../core/helper/constens.dart';
 
 class ListProductView extends StatelessWidget {
   const ListProductView({super.key});
@@ -19,7 +22,7 @@ class ListProductView extends StatelessWidget {
               : SingleChildScrollView(
                 child:
                     controller.isLoadingProduct.value
-                        ? CircularProgressIndicator()
+                        ? Center(child: CircularProgressIndicator())
                         : Wrap(
                           children:
                               controller.products
@@ -66,16 +69,16 @@ class ProductCard extends StatelessWidget {
                         width: Get.width / 2.6,
                         height: Get.height / 4,
                       ),
-                  Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: InkWell(
-                        onTap: () async {
-                          await CardService.addItems(item.id.toString());
-
-                          Get.find<HomeController>().updateCountCard();
-                        },
+                  InkWell(
+                    onTap: () async {
+                      await CardService.addItems(item.id.toString());
+                      Get.find<HomeController>().updateCountCard();
+                      Get.find<CartController>().getProductCart();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Align(
+                        alignment: Alignment.bottomRight,
                         child: Card(
                           elevation: 0,
                           color: Colors.white,
@@ -89,6 +92,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(4),
+
                     child: Align(
                       alignment: Alignment.topRight,
                       child: Card(
@@ -96,10 +100,30 @@ class ProductCard extends StatelessWidget {
                         color: Colors.white,
                         child: Padding(
                           padding: const EdgeInsets.all(6),
-                          child: Icon(
-                            Icons.favorite,
-                            size: 18,
-                            color: Colors.red[900],
+                          child: Obx(
+                            () =>
+                                Get.find<HomeController>().isFavLoading.value &&
+                                        Get.find<HomeController>()
+                                                .idLoading
+                                                .value ==
+                                            item.id
+                                    ? CircularProgressIndicator()
+                                    : GestureDetector(
+                                      onTap: () async {
+                                        await Get.find<HomeController>()
+                                            .addFavorites(item);
+                                        await Get.find<FavoritesController>()
+                                            .getData();
+                                      },
+                                      child: Icon(
+                                        Icons.favorite,
+                                        size: 18,
+                                        color:
+                                            isFavorites
+                                                ? Colors.red[900]
+                                                : Colors.grey,
+                                      ),
+                                    ),
                           ),
                         ),
                       ),
@@ -129,16 +153,12 @@ class ProductCard extends StatelessWidget {
             ),
           ),
           Text(item.name ?? '', style: TextStyle(fontWeight: FontWeight.w500)),
-          Text(
-            '\$${item.price ?? 0}',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          Text('\$${item.price ?? 0}', style: styleTitle),
         ],
       ),
     );
   }
+
+  bool get isFavorites =>
+      Get.find<HomeController>().cart.value.items!.any((e) => e.id == item.id);
 }

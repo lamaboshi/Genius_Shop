@@ -16,10 +16,7 @@ class HeaderSection extends StatelessWidget {
     return Obx(
       () => Column(
         children: [
-          Text(
-            'welcome ${controller.user.value.userName}!',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-          ),
+          Text('welcome ${controller.user.value.userName}!', style: styleTitle),
           Text(
             'Find Modern Furniture For Your Home',
             style: TextStyle(color: Colors.grey),

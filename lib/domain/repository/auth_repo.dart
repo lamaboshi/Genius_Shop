@@ -14,7 +14,7 @@ class AuthRepository extends IAuthRepository {
   final _storage = Get.find<StorageService>();
 
   @override
-  Future<User?> login(String username, String password) async {
+  Future<bool?> login(String username, String password) async {
     try {
       final response = await _dio.post(
         '$BASE_Endpoint/wp-json/jwt-auth/v1/token',
@@ -22,8 +22,8 @@ class AuthRepository extends IAuthRepository {
       );
       _storage.saveData(StorageService.authToken, response.data['token']);
 
-      final result = await getCurrentUser();
-      return result;
+      await getCurrentUser();
+      return response.statusCode == 200;
     } on DioException catch (e) {
       print('Login failed: ${e.response?.data}');
       return null;

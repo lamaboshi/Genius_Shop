@@ -25,12 +25,7 @@ class ReportView extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            Center(
-              child: Text(
-                'Report',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
+            Center(child: Text('Report', style: styleTitle)),
             sp20,
             Obx(
               () =>

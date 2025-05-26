@@ -40,10 +40,7 @@ class FilterDialog extends StatelessWidget {
             ],
           ),
           sp20,
-          Text(
-            'Category',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+          Text('Category', style: styleTitle),
           ListCategoriesView(isFilter: true),
           sp20,
           Obx(
@@ -55,13 +52,7 @@ class FilterDialog extends StatelessWidget {
                         (e) => Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              e.attribute!.name ?? '',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            Text(e.attribute!.name ?? '', style: styleTitle),
                             ListAttributeView(items: e.listAttribute!),
                           ],
                         ),
@@ -69,10 +60,7 @@ class FilterDialog extends StatelessWidget {
                       .toList(),
             ),
           ),
-          Text(
-            'price Range',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+          Text('price Range', style: styleTitle),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SfRangeSliderTheme(

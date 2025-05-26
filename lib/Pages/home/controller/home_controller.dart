@@ -1,6 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
 import 'package:genius_shop/core/api/card_service.dart';
+import 'package:genius_shop/domain/model/add_to_cart.dart';
+import 'package:genius_shop/domain/model/cart.dart';
+import 'package:genius_shop/domain/repository/cart_repo.dart';
 import 'package:get/get.dart';
 import 'package:overlayment/overlayment.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
@@ -13,6 +16,8 @@ import 'package:genius_shop/domain/repository/auth_repo.dart';
 import 'package:genius_shop/domain/repository/products_repo.dart';
 
 import '../../../domain/model/user.dart';
+import '../../cart_page/view/cart_view.dart';
+import '../../favorites/view/favorites_view.dart';
 import '../../profile/view/profile_view.dart';
 import '../view/main_home_view.dart';
 
@@ -28,8 +33,6 @@ class HomeController extends GetxController {
   final attribute = <ProductAttribute>[].obs;
   final selectedAttribute = <DefaultAttribute>[].obs;
 
-  final isLoading = false.obs;
-  final isLoadingProduct = false.obs;
   final pageIndex = 0.obs;
   final totalPages = 0.obs;
   final currentPage = 1.obs;
@@ -38,6 +41,14 @@ class HomeController extends GetxController {
   final filter = ProductFilter().obs;
   final priceRange = SfRangeValues(20.0, 80.0).obs;
   final countItem = 0.obs;
+
+  final repoCart = CartRepository();
+  final cart = Cart().obs;
+
+  final isLoading = false.obs;
+  final isLoadingProduct = false.obs;
+  final isFavLoading = false.obs;
+  final idLoading = 0.obs;
 
   final controllerTextField = TextEditingController(text: '');
   @override
@@ -48,6 +59,7 @@ class HomeController extends GetxController {
     await getAllProducts();
     await getAllCategory();
     await getAllAttribute();
+    await getFavorites();
     updateCountCard();
     isLoading.value = false;
   }
@@ -55,6 +67,7 @@ class HomeController extends GetxController {
   Future<void> updateCountCard() async {
     final count = await CardService.getItems();
     countItem.value = count.length;
+    countItem.value += cart.value.items!.length;
   }
 
   void getUser() {
@@ -62,6 +75,49 @@ class HomeController extends GetxController {
     if (data != null) {
       user.value = data;
     }
+  }
+
+  Future<Cart?> getFavorites() async {
+    final data = await repoCart.getCarts();
+    if (data != null) {
+      cart.value = data;
+    }
+    return cart.value;
+  }
+
+  Future<void> addFavorites(Product? item) async {
+    var data = false;
+    isFavLoading.value = true;
+    idLoading.value = item!.id!;
+    switch (item.type) {
+      case ProductType.simple:
+        data = await repoCart.addToCart(
+          AddToCart()
+            ..id = item.id.toString()
+            ..quantity = '1',
+        );
+        break;
+      case ProductType.grouped:
+        data = await repoCart.addToCartGrouped(
+          AddToCart()
+            ..id = item.id.toString()
+            ..quantityGrouped = {},
+        );
+        break;
+      case ProductType.variable:
+        data = await repoCart.addToCartVariable(
+          AddToCart()
+            ..id = item.id.toString()
+            ..quantity = '1',
+        );
+        break;
+      default:
+    }
+
+    if (data) {
+      await getFavorites();
+    }
+    isFavLoading.value = false;
   }
 
   Future<void> getAllProducts() async {
@@ -200,8 +256,8 @@ class HomeController extends GetxController {
 
   final pageList = [
     const MainHomeView(),
-    SizedBox(),
-    SizedBox(),
+    FavoritesView(),
+    CartView(),
     ProfileView(),
   ];
 }

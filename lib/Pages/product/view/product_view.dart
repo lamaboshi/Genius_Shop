@@ -26,10 +26,7 @@ class ProductView extends StatelessWidget {
           },
           icon: Icon(Icons.arrow_back_ios_new_outlined),
         ),
-        title: Text(
-          'Product Detail',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: Text('Product Detail', style: styleTitle),
         centerTitle: true,
         actions: [
           IconButton(
@@ -79,13 +76,7 @@ class ProductView extends StatelessWidget {
                               Text(
                                 controller.product.value.shortDescription ?? '',
                               ),
-                              Text(
-                                'Description',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              Text('Description', style: styleTitle),
                               ExpandableText(
                                 text:
                                     controller.product.value.description ?? '',

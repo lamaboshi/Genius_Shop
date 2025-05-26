@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:genius_shop/Pages/cart_page/controller/cart_controller.dart';
 import 'package:genius_shop/Pages/home/controller/home_controller.dart';
 import 'package:genius_shop/Pages/profile/controller/profile_controller.dart';
+import 'package:genius_shop/core/api/storage_service.dart';
 import 'package:get/get.dart';
 
 import '../../../app_router.dart';
@@ -19,12 +21,7 @@ class ProfileView extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
-                Center(
-                  child: Text(
-                    'Profile',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
+                Center(child: Text('Profile', style: styleTitle)),
                 sp10,
                 Container(
                   width: 130,
@@ -47,10 +44,7 @@ class ProfileView extends StatelessWidget {
                           : SizedBox.shrink(),
                 ),
                 sp10,
-                Text(
-                  controller.user.value.name ?? "",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
-                ),
+                Text(controller.user.value.name ?? "", style: styleTitle),
               ],
             ),
           ),
@@ -80,6 +74,7 @@ class ProfileView extends StatelessWidget {
                     onTap: () {
                       CardService.clearCard();
                       Get.find<HomeController>().updateCountCard();
+                      Get.find<CartController>().getProductCart();
                     },
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
@@ -87,6 +82,22 @@ class ProfileView extends StatelessWidget {
                     ),
                     leading: Icon(Icons.cleaning_services_rounded),
                     title: Text('Clear My Bug'),
+                  ),
+                ),
+                sp5,
+                Card(
+                  child: ListTile(
+                    onTap: () {
+                      final service = Get.find<StorageService>();
+                      service.deleteAllKeys();
+                      Get.rootDelegate.offAndToNamed(AppRouter.logIn);
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      side: BorderSide(color: Colors.grey),
+                    ),
+                    leading: Icon(Icons.logout),
+                    title: Text('Log Out'),
                   ),
                 ),
               ],

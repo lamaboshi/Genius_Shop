@@ -67,6 +67,7 @@ class Product {
   List<Attribute>? attributes;
   List<DefaultAttribute>? defaultAttributes;
   List<ProductTag>? tags;
+  int? quantity = 1;
   Product({
     this.id,
     this.name,

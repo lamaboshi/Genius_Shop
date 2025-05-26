@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class StorageService {
   static final authToken = 'jwt_token';
   static final userData = 'user_data';
+  static final cartId = 'cart_id';
 
   SharedPreferences? _sharedPreference;
 

@@ -7,11 +7,19 @@ import '../../../ui/widget/action_button.dart';
 import '../../../ui/widget/text_field.dart';
 
 class LoginView extends StatelessWidget {
-  const LoginView({super.key});
+  LoginView({super.key});
 
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<LogInController>();
+    void _submitForm() {
+      if (_formKey.currentState!.validate()) {
+        _formKey.currentState!.save();
+        controller.logIn(context);
+      }
+    }
+
     return Scaffold(
       body: Center(
         child: Padding(
@@ -21,10 +29,7 @@ class LoginView extends StatelessWidget {
               SizedBox(height: Get.height / 7),
               Column(
                 children: [
-                  Text(
-                    'Hi ,Welcome',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-                  ),
+                  Text('Hi ,Welcome', style: styleTitle),
                   Text(
                     'Welcome back! Please enter your details',
                     style: TextStyle(color: Colors.grey),
@@ -35,24 +40,39 @@ class LoginView extends StatelessWidget {
               SizedBox(height: Get.height / 17),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    TextFieldWidget(
-                      label: 'Email',
-                      onChanged: (String value) {
-                        controller.user.value.email = value;
-                      },
-                      textInputType: TextInputType.text,
-                    ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFieldWidget(
+                        'username',
+                        autofillHints: [AutofillHints.username],
+                        onSaved: (t) => controller.user.value.userName = t,
+                        keyboardType: TextInputType.text,
 
-                    TextFieldWidget(
-                      label: 'Password',
-                      onChanged: (value) {
-                        controller.user.value.password = value;
-                      },
-                      textInputType: TextInputType.text,
-                    ),
-                  ],
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.green),
+                        ),
+                      ),
+
+                      TextFieldWidget(
+                        'password',
+                        obscureText: true,
+                        autofillHints: [AutofillHints.password],
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.green),
+                        ),
+                        onFieldSubmitted: (s) => _submitForm(),
+                        validator: (e) {
+                          if (e!.length < 7) {
+                            return 'auth.password-un-valid';
+                          }
+                          return null;
+                        },
+                        onSaved: (t) => controller.user.value.password = t,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               sp10,
@@ -99,7 +119,10 @@ class LoginView extends StatelessWidget {
                             ),
                             withBorder: false,
                             onPressed: () async {
-                              await controller.logIn();
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState!.save();
+                                await controller.logIn(context);
+                              }
                             },
                           ),
                 ),
@@ -153,13 +176,7 @@ class LoginView extends StatelessWidget {
                     onTap: () {
                       Get.rootDelegate.toNamed(AppRouter.register);
                     },
-                    child: Text(
-                      'Register',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17,
-                      ),
-                    ),
+                    child: Text('Register', style: styleTitle),
                   ),
                 ],
               ),
