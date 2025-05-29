@@ -8,10 +8,12 @@ class Attribute {
   bool? visible;
   bool? variation;
   List<String>? options;
+  String? option;
   Attribute({
     this.id,
     this.position,
     this.visible,
+    this.option,
     this.variation,
     this.options,
     this.name,
@@ -25,6 +27,7 @@ class Attribute {
       'visible': visible,
       'variation': variation,
       'options': options,
+      'option': option,
     };
   }
 
@@ -32,6 +35,7 @@ class Attribute {
     return Attribute(
       id: map['id'] != null ? map['id'] as int : null,
       name: map['name'] != null ? map['name'] as String : null,
+      option: map['option'] != null ? map['option'] as String : null,
       position: map['position'] != null ? map['position'] as int : null,
       visible: map['visible'] != null ? map['visible'] as bool : null,
       variation: map['variation'] != null ? map['variation'] as bool : null,

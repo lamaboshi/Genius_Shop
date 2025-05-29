@@ -50,7 +50,9 @@ class ProductTitle extends StatelessWidget {
             ),
             IconButton(
               style: context.actionBorderButtonStyle,
-              onPressed: () {},
+              onPressed: () {
+                controller.addFavorites(controller.product.value);
+              },
               icon: Icon(Icons.favorite_outline),
             ),
           ],

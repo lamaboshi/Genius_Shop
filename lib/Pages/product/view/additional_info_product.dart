@@ -3,6 +3,7 @@ import 'package:genius_shop/Pages/product/controller/product_controller.dart';
 import 'package:get/get.dart';
 
 import '../../../core/helper/constens.dart';
+import 'type_product_widget.dart';
 
 class AdditionalInformationProduct extends StatelessWidget {
   AdditionalInformationProduct({super.key});
@@ -70,40 +71,7 @@ class AdditionalInformationProduct extends StatelessWidget {
           value:
               '${controller.product.value.dimensions!.height ?? 0} × ${controller.product.value.dimensions!.width ?? 0} × ${controller.product.value.dimensions!.length ?? 0} cm',
         ),
-
-        Column(
-          children:
-              controller.product.value.attributes!
-                  .map(
-                    (e) => Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            e.name ?? '',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Wrap(
-                            spacing: 8.0,
-                            children:
-                                e.options!.map((option) {
-                                  return FilterChip(
-                                    label: Text(option),
-                                    selected: true,
-                                    onSelected: (bool selected) {},
-                                  );
-                                }).toList(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                  .toList(),
-        ),
+        TypeProductWidget(),
       ],
     );
   }

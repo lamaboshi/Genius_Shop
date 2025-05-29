@@ -36,6 +36,7 @@ class HomeController extends GetxController {
   final pageIndex = 0.obs;
   final totalPages = 0.obs;
   final currentPage = 1.obs;
+  final totalProduct = 0.obs;
 
   final selectedCategory = Category(name: null).obs;
   final filter = ProductFilter().obs;
@@ -123,7 +124,8 @@ class HomeController extends GetxController {
   Future<void> getAllProducts() async {
     isLoadingProduct.value = true;
 
-    totalPages.value = await repo.fetchProductsWithPagination();
+    totalProduct.value = await repo.fetchProductsWithPagination();
+    totalPages.value = (totalProduct.value / 8).toInt();
     print('Total pages needed: $totalPages');
     await getProductByPage(1);
   }

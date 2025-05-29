@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:genius_shop/domain/model/product_download.dart';
-
 import 'default_attributes.dart';
 import 'dimensions.dart';
 import 'product_attribute.dart';
@@ -67,14 +66,13 @@ class Product {
   List<Attribute>? attributes;
   List<DefaultAttribute>? defaultAttributes;
   List<ProductTag>? tags;
-  int? quantity = 1;
+  List<int>? variations;
   Product({
     this.id,
     this.name,
     this.sku,
     this.slug,
     this.description,
-    this.type,
     this.price,
     this.regularPrice,
     this.salePrice,
@@ -84,19 +82,20 @@ class Product {
     this.virtual,
     this.downloadable,
     this.manageStock,
-    this.weight,
     this.stockQuantity,
     this.averageRating,
-    this.shippingClassId,
     this.relatedIds,
     this.upsellIds,
+    this.type,
     this.ratingCount,
     this.stockStatus,
     this.backordersAllowed,
     this.backOrdered,
     this.soldIndividually,
     this.shippingRequired,
+    this.shippingClassId,
     this.dimensions,
+    this.weight,
     this.downloads,
     this.downloadLimit,
     this.downloadExpiry,
@@ -105,6 +104,7 @@ class Product {
     this.attributes,
     this.defaultAttributes,
     this.tags,
+    this.variations,
   });
 
   Map<String, dynamic> toMap() {
@@ -220,6 +220,7 @@ class Product {
           map['dimensions'] != null
               ? Dimensions.fromMap(map['dimensions'] as Map<String, dynamic>)
               : null,
+
       downloads:
           map['downloads'] != null
               ? List<ProductDownload>.from(
@@ -228,6 +229,9 @@ class Product {
                 ),
               )
               : null,
+      variations:
+          map['variations'] != null ? List<int>.from(map['variations']) : null,
+
       downloadLimit:
           map['download_limit'] != null ? map['download_limit'] as int : null,
       downloadExpiry:

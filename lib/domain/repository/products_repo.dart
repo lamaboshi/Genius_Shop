@@ -3,6 +3,7 @@ import 'package:genius_shop/domain/model/default_attributes.dart';
 import 'package:genius_shop/domain/model/product.dart';
 import 'package:genius_shop/domain/model/product_attribute.dart';
 import 'package:genius_shop/domain/model/product_category.dart';
+import 'package:genius_shop/domain/model/variations.dart';
 import 'package:genius_shop/main.dart';
 import 'package:get/get.dart';
 
@@ -89,9 +90,7 @@ class ProductsRepository extends IProductsRepository {
     final totalPages =
         int.tryParse(response.headers.value('X-WP-TotalPages') ?? '1') ?? 1;
 
-    final result = (totalPages / 8).toInt();
-
-    return result;
+    return totalPages;
   }
 
   @override
@@ -130,6 +129,27 @@ class ProductsRepository extends IProductsRepository {
         response.data
             .map<DefaultAttribute>(
               (json) => DefaultAttribute.fromMap(json as Map<String, dynamic>),
+            )
+            .toList();
+
+    return data;
+  }
+
+  @override
+  Future<List<VariationProduct>> getVariations(String id) async {
+    final response = await DioApiHandler.execute(
+      apiCall:
+          () => _dio.get(
+            '$BASE_Endpoint/wp-json/wc/v3/products/$id/variations',
+            options: Options(headers: {'Authorization': 'Bearer $token'}),
+          ),
+      operationName: 'Fetch Variations',
+    );
+    if (response.data == null) return [];
+    final data =
+        response.data
+            .map<VariationProduct>(
+              (json) => VariationProduct.fromMap(json as Map<String, dynamic>),
             )
             .toList();
 

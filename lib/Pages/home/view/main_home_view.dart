@@ -21,16 +21,25 @@ class MainHomeView extends StatelessWidget {
           children: [
             ListCategoriesView(isFilter: false),
             Obx(
-              () => ProductPagination(
-                currentPage: controller.currentPage.value,
-                totalPages: controller.totalPages.value,
-                onPageChanged: (value) async {
-                  if (value != controller.currentPage.value) {
-                    controller.currentPage.value = value;
-                    await controller.getProductByPage(value);
-                  }
-                },
-                isLoading: false,
+              () => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Showing : 8/ ${controller.totalProduct.value}',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  ProductPagination(
+                    currentPage: controller.currentPage.value,
+                    totalPages: controller.totalPages.value,
+                    onPageChanged: (value) async {
+                      if (value != controller.currentPage.value) {
+                        controller.currentPage.value = value;
+                        await controller.getProductByPage(value);
+                      }
+                    },
+                    isLoading: false,
+                  ),
+                ],
               ),
             ),
           ],

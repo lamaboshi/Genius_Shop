@@ -76,35 +76,39 @@ class LoginView extends StatelessWidget {
                 ),
               ),
               sp10,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Obx(
-                    () => Flexible(
-                      child: CheckboxListTile(
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        controlAffinity: ListTileControlAffinity.leading,
-                        dense: true,
-                        fillColor: WidgetStatePropertyAll(
-                          controller.rememberMe.value
-                              ? Colors.black
-                              : Colors.transparent,
-                        ),
-                        value: controller.rememberMe.value,
-                        onChanged: (value) {
-                          controller.rememberMe.value = value!;
-                        },
-                        title: Text('Remember me'),
-                      ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Obx(
+                    //   () => Flexible(
+                    //     child: CheckboxListTile(
+                    //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    //       controlAffinity: ListTileControlAffinity.leading,
+                    //       dense: true,
+                    //       fillColor: WidgetStatePropertyAll(
+                    //         controller.rememberMe.value
+                    //             ? Colors.black
+                    //             : Colors.transparent,
+                    //       ),
+                    //       value: controller.rememberMe.value,
+                    //       onChanged: (value) {
+                    //         controller.rememberMe.value = value!;
+                    //       },
+                    //       title: Text('Remember me'),
+                    //     ),
+                    //   ),
+                    // ),
+                    SizedBox.shrink(),
+                    InkWell(
+                      onTap: () {
+                        Get.rootDelegate.toNamed(AppRouter.confirm);
+                      },
+                      child: Text('Forget password ?!'),
                     ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Get.rootDelegate.toNamed(AppRouter.confirm);
-                    },
-                    child: Text('Forget password ?!'),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),

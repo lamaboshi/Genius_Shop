@@ -69,27 +69,35 @@ class ProductCard extends StatelessWidget {
                         width: Get.width / 2.6,
                         height: Get.height / 4,
                       ),
-                  InkWell(
-                    onTap: () async {
-                      await CardService.addItems(item.id.toString());
-                      Get.find<HomeController>().updateCountCard();
-                      Get.find<CartController>().getProductCart();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Align(
-                        alignment: Alignment.bottomRight,
-                        child: Card(
-                          elevation: 0,
-                          color: Colors.white,
-                          child: Padding(
-                            padding: const EdgeInsets.all(6),
+                  Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(6),
+                          child: GestureDetector(
+                            onTap: () async {
+                              if (item.type == ProductType.simple) {
+                                await CardService.addItems(item.id.toString());
+                                Get.find<HomeController>().updateCountCard();
+                                Get.find<CartController>().getProductCart();
+                              } else {
+                                Get.rootDelegate.toNamed(
+                                  AppRouter.product,
+                                  arguments: {'id': item.id},
+                                );
+                              }
+                            },
                             child: Icon(Icons.shopping_bag_outlined),
                           ),
                         ),
                       ),
                     ),
                   ),
+
                   Padding(
                     padding: const EdgeInsets.all(4),
 
@@ -110,10 +118,17 @@ class ProductCard extends StatelessWidget {
                                     ? CircularProgressIndicator()
                                     : GestureDetector(
                                       onTap: () async {
-                                        await Get.find<HomeController>()
-                                            .addFavorites(item);
-                                        await Get.find<FavoritesController>()
-                                            .getData();
+                                        if (item.type == ProductType.simple) {
+                                          await Get.find<HomeController>()
+                                              .addFavorites(item);
+                                          await Get.find<FavoritesController>()
+                                              .getData();
+                                        } else {
+                                          Get.rootDelegate.toNamed(
+                                            AppRouter.product,
+                                            arguments: {'id': item.id},
+                                          );
+                                        }
                                       },
                                       child: Icon(
                                         Icons.favorite,

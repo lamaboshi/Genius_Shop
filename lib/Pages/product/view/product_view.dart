@@ -134,22 +134,18 @@ class ProductView extends StatelessWidget {
                   ),
                 ),
       ),
-      floatingActionButton:
-          controller.product.value.backordersAllowed == null ||
-                  controller.product.value.backordersAllowed!
-              ? SizedBox.shrink()
-              : FloatingActionButton.extended(
-                onPressed: () {},
-                backgroundColor: Colors.black87,
-                label: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.shopping_basket_outlined, color: Colors.white),
-                    sp10,
-                    Text('Add To Card', style: TextStyle(color: Colors.white)),
-                  ],
-                ),
-              ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {},
+        backgroundColor: Colors.black87,
+        label: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.shopping_basket_outlined, color: Colors.white),
+            sp10,
+            Text('Add To Card', style: TextStyle(color: Colors.white)),
+          ],
+        ),
+      ),
     );
   }
 

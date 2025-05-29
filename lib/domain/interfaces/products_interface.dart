@@ -1,6 +1,7 @@
 import 'package:genius_shop/domain/model/default_attributes.dart';
 import 'package:genius_shop/domain/model/product.dart';
 import 'package:genius_shop/domain/model/product_category.dart';
+import 'package:genius_shop/domain/model/variations.dart';
 
 import '../model/product_attribute.dart';
 
@@ -11,4 +12,5 @@ abstract class IProductsRepository {
   Future<List<Attribute>> getAllAttribute();
   Future<List<DefaultAttribute>> getAllDefaultAttribute(int id);
   Future<Product> getProductById(int id);
+  Future<List<VariationProduct>> getVariations(String id);
 }

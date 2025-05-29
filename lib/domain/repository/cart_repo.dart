@@ -28,6 +28,8 @@ class CartRepository extends ICartRepository {
       StorageService.cartId,
       response.data['cart_key'],
     );
+    logger.i(Get.find<StorageService>().getData(StorageService.cartId));
+
     return Cart.fromMap(response.data as Map<String, dynamic>);
   }
 
@@ -66,7 +68,7 @@ class CartRepository extends ICartRepository {
     final response = await DioApiHandler.execute(
       apiCall:
           () => _dio.post(
-            '$BASE_Endpoint/wp-json/cocart/v2/cart/add-item',
+            '$BASE_Endpoint/wp-json/cocart/v2/cart/add-items',
 
             data: cart.toMapVariable(),
             options: Options(headers: {'Authorization': 'Bearer $token'}),
